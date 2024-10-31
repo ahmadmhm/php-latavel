@@ -6,7 +6,7 @@ services:
             context: ./
             dockerfile: dev.Dockerfile
         image: asanbar-ag-alpine
-        container_name: ag-panel
+        container_name: php-panel
         restart: unless-stopped
         working_dir: /var/www/html
         tty: true
@@ -17,23 +17,9 @@ services:
         extra_hosts:
           - "host.docker.internal:host-gateway"
         networks:
-            - asanbar-ag
-    redis:
-        image: redis:alpine
-        container_name: ag-redis
-        hostname: redis
-        ports:
-            - '6479:6379'
-        networks:
-            - asanbar-ag
-        healthcheck:
-            test: [ "CMD", "redis-cli", "ping" ]
-            retries: 3
-            timeout: 5s
+            - php-ag
 
 networks:
-    asanbar-ag:
+    php-ag:
 
-volumes:
-    selenium:
 

@@ -1,17 +1,9 @@
 PRODUCTION=./docker-compose.prod.yml
 COMPOSE_FILES=./docker-compose.dev.yml
-GRAYLOG_COMPOSE_FILES=./.docker/docker-compose-graylog.yml
 POSTGRES_COMPOSE_FILES=./.docker/docker-compose-postgres.yml
-ELASTIC_STACK_FILES=./.docker/docker-compose-elastic.yml
-SELENIUM_FILES=./.docker/docker-compose-selenium.yml
 
 help:
 	@echo "";
-	@echo "	    ___                             __					  ";
-	@echo "	   /   |   _____  ____ _   ____    / /_   ____ _   _____  ";
-	@echo "	  / /| |  / ___/ / __  /  / __ \  / __ \ / __  /  / ___/  ";
-	@echo "         / ___ | (__  ) / /_/ /  / / / / / /_/ // /_/ /  / /";
-	@echo "	/_/  |_|/____/  \__,_/  /_/ /_/ /_.___/ \__,_/  /_/   (v1)";
 	@echo ""
 	@echo "build"
 	@echo "  Build docker image and start containers."
@@ -62,20 +54,11 @@ help:
 build:
 	docker compose -f $(COMPOSE_FILES) build --no-cache
 
-elastic-setup:
-	docker compose -f $(COMPOSE_FILES) -f $(ELASTIC_STACK_FILES) --env-file .env up setup
-
 up:
-	docker compose -f $(COMPOSE_FILES) -f $(POSTGRES_COMPOSE_FILES) -f $(ELASTIC_STACK_FILES) up -d
+	docker compose -f $(COMPOSE_FILES) -f $(POSTGRES_COMPOSE_FILES) up -d
 
 down:
-	docker compose -f $(COMPOSE_FILES) -f $(POSTGRES_COMPOSE_FILES) -f $(ELASTIC_STACK_FILES) down
-
-up-graylog:
-	docker compose -f $(COMPOSE_FILES) -f $(GRAYLOG_COMPOSE_FILES) up -d
-
-up-selenium:
-	docker compose -f $(COMPOSE_FILES) -f $(SELENIUM_FILES) up -d
+	docker compose -f $(COMPOSE_FILES) -f $(POSTGRES_COMPOSE_FILES) down
 
 restart:
 	docker compose -f $(COMPOSE_FILES) restart
@@ -94,18 +77,3 @@ shell:
 
 shell-as-root:
 	docker compose -f $(COMPOSE_FILES) exec  --user=root app ash
-
-git:
-	git pull --recurse-submodules
-
-submodules:
-	git submodule update --remote
-
-submodule-develop:
-	git submodule foreach --recursive 'git checkout develop'
-
-submodule-develop-rebase:
-	git submodule foreach --recursive 'git pull --rebase origin develop'
-
-submodule-master:
-	git submodule foreach --recursive 'git checkout master'

@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   postgres:
-    container_name: ag-postgres
+    container_name: php-postgres
     image: postgres:15.2-alpine
     environment:
       POSTGRES_USER: asanbar_ag_db_user
@@ -13,11 +13,11 @@ services:
       - postgres:/data/postgres
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
     networks:
-      - asanbar-ag
+      - php-ag
     restart: unless-stopped
 
   pgadmin:
-    container_name: ag-pgadmin
+    container_name: php-pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
@@ -30,12 +30,12 @@ services:
     ports:
       - "8081:80"
     networks:
-      - asanbar-ag
+      - php-ag
     restart: unless-stopped
 
 
 networks:
-    asanbar-ag:
+    php-ag:
 
 volumes:
   postgres:
