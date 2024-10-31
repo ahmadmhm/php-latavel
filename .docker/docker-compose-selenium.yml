@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  selenium:
+    image: selenium/standalone-chrome:117.0
+    container_name: ag-selenium
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    volumes:
+      - selenium:/dev/shm
+    networks:
+      - asanbar-ag
+    restart: unless-stopped
+
+networks:
+    asanbar-ag:
+
+volumes:
+  selenium:
+
