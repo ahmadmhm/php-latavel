@@ -19,10 +19,10 @@ final class Version20241101082015 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql("CREATE TABLE companies (
+        $this->addSql('CREATE TABLE companies (
                 id SERIAL PRIMARY KEY, 
                 name VARCHAR(100) NOT NULL UNIQUE CHECK (LENGTH(name) >= 5)
-               )");
+               )');
     }
 
     public function down(Schema $schema): void
