@@ -92,7 +92,7 @@ COPY --chown=www-data ./ /var/www/html/
 
 RUN chmod 755 .docker/dev/docker-entrypoint.sh
 
-RUN #composer install --no-autoloader
+RUN composer install --no-autoloader
 
 # Expose the port nginx is reachable on
 EXPOSE 8080

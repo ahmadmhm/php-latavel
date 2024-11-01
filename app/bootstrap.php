@@ -1,8 +1,8 @@
 <?php
 
-use Doctrine\ORM\ORMSetup;
-use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -16,7 +16,7 @@ $dbParams = [
 ];
 
 $config = ORMSetup::createAttributeMetadataConfiguration(
-    [__DIR__ . "/app/Models"], // Path to entities
+    [__DIR__.'/Models'], // Path to entities
     true,               // Enable development mode
 );
 

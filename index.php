@@ -6,42 +6,49 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-use App\Controllers\CompanyController;
-use App\Controllers\UserController;
+use App\ApiRouter;
+use App\Controllers\Api\AuthController;
+use App\Controllers\Api\CompanyController;
+use App\Controllers\Api\UserController;
+use App\Http\AuthMiddleware;
 use App\Repositories\CompanyRepository;
 use App\Repositories\UserRepository;
+use App\Services\AuthService;
 
 // Load configuration
 $entityManager = require 'app/bootstrap.php';
-$jwtSecret = 'your_jwt_secret';
+$envManager = require 'app/Helpers/helpers.php';
+$router = new ApiRouter;
+loadEnv();
 
 // Dependency injection
 $userRepository = new UserRepository($entityManager);
 $companyRepository = new CompanyRepository($entityManager);
-$userController = new UserController($userRepository, $jwtSecret);
+$authService = new AuthService;
+$authController = new AuthController($userRepository);
+$userController = new UserController($userRepository);
 $companyController = new CompanyController($companyRepository);
 
-// Simple Router
-$requestUri = $_SERVER['REQUEST_URI'];
-$requestMethod = $_SERVER['REQUEST_METHOD'];
+// Auth routes
+$router->post('/auth/login', [$authController, 'login']);
 
-// Routes
-switch ($requestUri) {
-    case '/users':
-        if ($requestMethod === 'GET') {
-            echo json_encode($userController->index($_SERVER));
-        } elseif ($requestMethod === 'POST') {
-            echo json_encode($userController->store($_POST));
-        }
-        break;
-    case '/companies':
-        if ($requestMethod === 'GET') {
-            echo json_encode($companyController->index());
-        } elseif ($requestMethod === 'POST') {
-            echo json_encode($companyController->store($_POST));
-        }
-        break;
-    default:
-        echo '404 Not Found';
-        break;
+//needs auth middleware routes
+if ((new AuthMiddleware($userRepository))->authenticate()) {
+    // User routes
+    $router->get('/users', [$userController, 'index']);
+    $router->get('/users/{id}', [$userController, 'show']);
+    $router->post('/users', [$userController, 'store']);
+    $router->delete('/users/{id}', [$userController, 'delete']);
+
+    // Company routes
+    $router->get('/companies', [$companyController, 'index']);
+    $router->get('/companies/{id}', [$companyController, 'show']);
+    $router->post('/companies', [$companyController, 'store']);
 }
+
+// Dispatch the request
+$method = $_SERVER['REQUEST_METHOD'];
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+header('Content-Type: application/json');
+$router->dispatch($method, $uri);

@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Api;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
-class UserController
+class UserController extends BaseController
 {
     private UserRepository $userRepository;
 
-    private string $jwtSecret;
-
-    public function __construct(UserRepository $userRepository, string $jwtSecret)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->jwtSecret = $jwtSecret;
     }
 
     // Get list of users based on role
@@ -47,18 +42,5 @@ class UserController
         $user = new User($request['name'], $request['role'], $authUser->getCompany());
 
         return $this->userRepository->create($user);
-    }
-
-    // Authenticate using JWT token
-    private function authenticate($request): ?User
-    {
-        if (! isset($request['Authorization'])) {
-            throw new \Exception('Authorization header missing');
-        }
-
-        $jwt = str_replace('Bearer ', '', $request['Authorization']);
-        $decoded = JWT::decode($jwt, new Key($this->jwtSecret, 'HS256'));
-
-        return $this->userRepository->find($decoded->sub);
     }
 }

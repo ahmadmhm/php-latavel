@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\UserController;
+use App\Controllers\Api\UserController;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use PHPUnit\Framework\TestCase;

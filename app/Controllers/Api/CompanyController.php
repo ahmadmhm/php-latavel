@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Api;
 
 use App\Models\Company;
 use App\Repositories\CompanyRepository;
 
-class CompanyController
+class CompanyController extends BaseController
 {
     private CompanyRepository $companyRepository;
 
