@@ -1,0 +1,5 @@
+@generate new migration file
+vendor/bin/doctrine-migrations generate --configuration config/migrations.php
+
+@migrate migrations
+vendor/bin/doctrine-migrations migrate --configuration config/migrations.php --db-configuration config/database.php
